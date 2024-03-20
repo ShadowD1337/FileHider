@@ -1,6 +1,7 @@
-﻿using StegoSharp;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -10,22 +11,31 @@ namespace FileHider.Data.Models
 {
     public class ImageFile
     {
-        public StegoStrategy StegoStrategy { get; init; }
+        [Column("id")]
+        public int Id { get; init; }
+        [Column("stego_strat_id")]
+        public int StegoStrategyId { get; init; }
+        [Column("download_link")]
         public string DownloadLink { get; init; }
-        public HiddenInformation HiddenInformation { get; init; }
+        [Column("hidden_info_id")]
+        public int HiddenInformationId { get; set; }
+        [NotMapped]
+        public HiddenInformation HiddenInformation { get; set; }
+        [Column("total_byte_capacity")]
         public int TotalByteCapacity { get; init; }
+        [Column("byte_capacity_left")]
         public int ByteCapacityLeft {
             get
             {
                 return TotalByteCapacity - HiddenInformation.Size;
             }
         }
-        public ImageFile(StegoStrategy stegoStrategy, string downloadLink, HiddenInformation hiddenInformation, int totalCapacity)
+        public ImageFile(int stegoStrategyId, string downloadLink, int hiddenInformationId, int totalByteCapacity)
         {
-            StegoStrategy = stegoStrategy;
+            StegoStrategyId = stegoStrategyId;
             DownloadLink = downloadLink;
-            HiddenInformation = hiddenInformation;
-            TotalByteCapacity = totalCapacity;
+            HiddenInformationId = hiddenInformationId;
+            TotalByteCapacity = totalByteCapacity;
         }
     }
 }
