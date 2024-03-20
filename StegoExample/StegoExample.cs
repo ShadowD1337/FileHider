@@ -12,6 +12,7 @@ namespace Stego
             var image = new StegoImage("C:\\Users\\user\\Desktop\\old.jpg");
             image.Strategy.ColorChannels = new[] { ColorChannel.G, ColorChannel.B, ColorChannel.R };
             image.Strategy.BitsPerChannel = 2;
+            image.Strategy.PixelSelection = p => p.Index % 2 == 0;
 
             var msg = "test123";
             image.EmbedPayload(msg);
