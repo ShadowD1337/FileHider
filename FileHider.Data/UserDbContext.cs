@@ -13,6 +13,7 @@ namespace FileHider.Data
         public DbSet<User> Users { get; set; }
         public DbSet<HiddenInformation> HiddenInformations { get; set; }
         public DbSet<ImageFile> ImageFiles { get; set; }
+        public DbSet<ImageStegoStrategy> ImageStegoStrategies { get; set; }
         public UserDbContext()
         {
         }
