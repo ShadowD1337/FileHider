@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHider", "FileHider.csproj", "{6E074735-E540-40B4-A82D-F5805C6147BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHider.Core", "FileHider.Core\FileHider.Core.csproj", "{6E074735-E540-40B4-A82D-F5805C6147BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StegoExample", "src\StegoExample\StegoExample.csproj", "{714B3881-9970-48E2-ABD1-97AF6111CF21}"
 EndProject
