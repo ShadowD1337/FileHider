@@ -1,9 +1,4 @@
-﻿using StegoSharp;
-using StegoSharp.Enums;
-using System.Drawing;
-using System.Text;
-
-namespace Stego
+﻿namespace FileHider
 {
     internal class Program
     {
