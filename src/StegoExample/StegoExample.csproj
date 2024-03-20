@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="StegoExample\**" />
+    <EmbeddedResource Remove="StegoExample\**" />
+    <None Remove="StegoExample\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="StegoSharp" Version="0.0.0.6" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
   </ItemGroup>
