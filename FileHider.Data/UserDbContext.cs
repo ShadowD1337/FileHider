@@ -20,5 +20,9 @@ namespace FileHider.Data
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
         {
         }
+        public void LoadImageFileHiddenInfo(ImageFile imageFile)
+        {
+            imageFile.HiddenInformation = HiddenInformations.First(h => h.Id == imageFile.Id);
+        }
     }
 }

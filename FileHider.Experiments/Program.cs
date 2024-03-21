@@ -14,7 +14,7 @@ namespace FileHider.Experiments
 
             Console.WriteLine(imageStegoStrategy.ColorChannelsString);*/
 
-            const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
+            /*const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
 
             var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
             optionsBuilder.LogTo(Console.WriteLine, minimumLevel: LogLevel.Information);
@@ -28,14 +28,14 @@ namespace FileHider.Experiments
             dbContext.ImageStegoStrategies.Add(new ImageStegoStrategy("Red,Green", 2, 1));
             dbContext.ImageFiles.Add(new ImageFile(1, "test", 1, 999));
 
-            /*foreach (var imageFile in dbContext.ImageFiles)
+            foreach (var imageFile in dbContext.ImageFiles)
             {
                 imageFile.HiddenInformation = dbContext.HiddenInformations.Where(h => h.Id == imageFile.HiddenInformationId).First();
-            }*/
+            }
 
             //Console.WriteLine(dbContext.Users.Where(u => u.FirstName == "gosho").First().Id);
 
-            dbContext.SaveChanges();
+            dbContext.SaveChanges();*/
         }
     }
 }
