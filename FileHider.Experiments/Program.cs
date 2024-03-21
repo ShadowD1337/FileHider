@@ -1,5 +1,6 @@
 ﻿using FileHider.Data;
 using FileHider.Data.Models;
+using FileHider.Web.MVC.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StegoSharp;
@@ -8,6 +9,7 @@ namespace FileHider.Experiments
 {
     internal class Program
     {
+        private static ILogger<HomeController> logger;
         static void Main(string[] args)
         {
             const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
@@ -38,6 +40,14 @@ namespace FileHider.Experiments
             //Console.WriteLine(dbContext.Users.Where(u => u.FirstName == "gosho").First().Id);
 
             dbContext.SaveChanges();*/
+
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            logger = new Logger<HomeController>(loggerFactory);
+
+            var controller = new HomeController(logger);
+            controller.InitializeUserEngine(connectionString, "1c2ee617-7134-44cd-920a-ee15408cff9a");
+
+
         }
     }
 }

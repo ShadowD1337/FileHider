@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using StegoSharp;
 using StegoSharp.Enums;
 
-namespace FileHider.Data
+namespace FileHider.Data.Models
 {
     public class ImageStegoStrategy
     {
@@ -23,7 +23,19 @@ namespace FileHider.Data
             get => StringToColorChannels(ColorChannelsString);
             init => ColorChannelsString = string.Join(",", value.Select(c => Enum.GetName(typeof(ColorChannel), c)));
         }
+        [NotMapped]
+        public StegoStrategy AsStegoStrategy { 
+            get
+            {
+                var strategy = new StegoStrategy();
 
+                strategy.ColorChannels = ColorChannels;
+                strategy.BitsPerChannel = BitsPerChannel;
+                strategy.PixelSelection = PixelSelection;
+
+                return strategy;
+            } 
+        }
         private int _bitsPerChannel;
         [Column("bits_per_channel")]
         public int BitsPerChannel { get => _bitsPerChannel; init => _bitsPerChannel = Math.Clamp(value, 1, 8); }

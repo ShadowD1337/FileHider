@@ -5,13 +5,13 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StegoExample", "StegoExample\StegoExample.csproj", "{6052A69A-3434-4112-8CAF-BA81A24C81E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHider.Experiments", "FileHider.Experiments\FileHider.Experiments.csproj", "{EDB99370-1DB7-436A-B641-4CB34F6A5254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHider.Experiments", "FileHider.Experiments\FileHider.Experiments.csproj", "{EDB99370-1DB7-436A-B641-4CB34F6A5254}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHider.Data", "FileHider.Data\FileHider.Data.csproj", "{F00FAD75-18A1-4D02-905B-3473663F76EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHider.Core", "FileHider.Core\FileHider.Core.csproj", "{3B6132FF-188C-45BB-98B0-EACADEAB0D6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHider.Web.MVC", "FileHider.Web.MVC\FileHider.Web.MVC.csproj", "{B6A8A767-9137-4B98-A87D-425781BBA823}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHider.Web.MVC", "FileHider.Web.MVC\FileHider.Web.MVC.csproj", "{16B0BEDF-0EAB-4E9E-B88B-AD41105BE889}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{3B6132FF-188C-45BB-98B0-EACADEAB0D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B6132FF-188C-45BB-98B0-EACADEAB0D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B6132FF-188C-45BB-98B0-EACADEAB0D6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6A8A767-9137-4B98-A87D-425781BBA823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6A8A767-9137-4B98-A87D-425781BBA823}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6A8A767-9137-4B98-A87D-425781BBA823}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6A8A767-9137-4B98-A87D-425781BBA823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B0BEDF-0EAB-4E9E-B88B-AD41105BE889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B0BEDF-0EAB-4E9E-B88B-AD41105BE889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B0BEDF-0EAB-4E9E-B88B-AD41105BE889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B0BEDF-0EAB-4E9E-B88B-AD41105BE889}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

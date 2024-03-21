@@ -20,22 +20,31 @@ namespace FileHider.Data.Models
         [Column("hidden_info_id")]
         public int HiddenInformationId { get; set; }
         [NotMapped]
-        public HiddenInformation HiddenInformation { get; set; }
+        public HiddenInformation? HiddenInformation { get; private set; }
         [Column("total_byte_capacity")]
         public int TotalByteCapacity { get; init; }
         [Column("byte_capacity_left")]
         public int ByteCapacityLeft {
             get
             {
-                return TotalByteCapacity - HiddenInformation.Size;
+                int byteSize = HiddenInformation is not null ? HiddenInformation.Size : 0;
+                return TotalByteCapacity - byteSize;
             }
         }
-        public ImageFile(int stegoStrategyId, string downloadLink, int hiddenInformationId, int totalByteCapacity)
+        [Column("user_id")]
+        public string UserId { get; init; }
+        public ImageFile(string userId, int stegoStrategyId, string downloadLink, int hiddenInformationId, int totalByteCapacity)
         {
+            UserId = userId;
             StegoStrategyId = stegoStrategyId;
             DownloadLink = downloadLink;
             HiddenInformationId = hiddenInformationId;
             TotalByteCapacity = totalByteCapacity;
+        }
+
+        public void LoadHiddenInformation(UserDbContext dbContext)
+        {
+            this.HiddenInformation = dbContext.HiddenInformations.First(h => h.Id == this.Id);
         }
     }
 }

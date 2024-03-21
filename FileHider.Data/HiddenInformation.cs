@@ -10,10 +10,10 @@ namespace FileHider.Data.Models
 {
     public class HiddenInformation
     {
+        [Column("id")]
         public int Id { get; init; }
         [Column("size")]
         public int Size { get; init; }
-        
         [Column("content")]
         public string Content { get; init; }
         public HiddenInformation(string content)
