@@ -18,8 +18,7 @@ namespace FileHider.Experiments
 
             Console.WriteLine(imageStegoStrategy.ColorChannelsString);*/
 
-            /*const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
-
+            /*
             var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
             optionsBuilder.LogTo(Console.WriteLine, minimumLevel: LogLevel.Information);
             optionsBuilder.UseMySQL(connectionString);

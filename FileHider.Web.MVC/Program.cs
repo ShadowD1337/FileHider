@@ -1,4 +1,5 @@
 using FileHider.Web.MVC.Data;
+using FileHider.Web.MVC.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,13 +10,12 @@ namespace FileHider.Web.MVC
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
-
-            // Add services to the container.
+            // Add services to the container.   builder.Configuration.GetConnectionString("DefaultConnection")
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySQL(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+                options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("No DefaultConnection connection string found.")));
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
+            
+            builder.Services.Configure<DropBoxSettings>(builder.Configuration.GetSection(DropBoxSettings.Section));
 
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
