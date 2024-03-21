@@ -10,6 +10,8 @@ namespace FileHider.Experiments
     {
         static void Main(string[] args)
         {
+            const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
+
             /*var imageStegoStrategy = new ImageStegoStrategy(new[] { StegoSharp.Enums.ColorChannel.G, StegoSharp.Enums.ColorChannel.R }, 2, 1);
 
             Console.WriteLine(imageStegoStrategy.ColorChannelsString);*/
