@@ -12,13 +12,11 @@ namespace FileHider.Core
     public class StegoEngine
     {
         private string _userId;
-        private string _dropBoxApiKey;
         private FileUploader _fileUploader;
-        public StegoEngine(string userId, string dropBoxApiKey)
+        public StegoEngine(string userId, (string filePath, string bucketName) options)
         {
             _userId = userId;
-            _dropBoxApiKey = dropBoxApiKey;
-            _fileUploader = new FileUploader(dropBoxApiKey);
+            _fileUploader = new FileUploader(options);
         }
 
         public void HideMessageInImage(string content, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
@@ -36,11 +34,11 @@ namespace FileHider.Core
 
         public string GenerateDownloadLink(StegoImage stegoImage, string imageNameWithExt)
         {
-            return _fileUploader.UploadImage(stegoImage, imageNameWithExt).Result;
+            return _fileUploader.UploadImageAsync(stegoImage, imageNameWithExt).Result;
         }
         public string GenerateDownloadLink(byte[] fileBytes, string fileNameWithExt)
         {
-            return _fileUploader.UploadFile(fileBytes, fileNameWithExt).Result;
+            return _fileUploader.UploadFileAsync(fileBytes, fileNameWithExt).Result;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace FileHider.Web.MVC
                 options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("No DefaultConnection connection string found.")));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
             
-            builder.Services.Configure<DropBoxSettings>(builder.Configuration.GetSection(DropBoxSettings.Section));
+            builder.Services.Configure<GoogleFirebaseSettings>(builder.Configuration.GetSection(GoogleFirebaseSettings.Section));
 
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

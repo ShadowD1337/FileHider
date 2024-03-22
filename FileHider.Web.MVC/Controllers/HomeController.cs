@@ -17,16 +17,22 @@ namespace FileHider.Web.MVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IOptions<DropBoxSettings> _dropBoxSettings;
+        private readonly IOptions<GoogleFirebaseSettings> _firebaseOptions;
+        private (string filePath, string bucketName) _options => (_firebaseOptions.Value.ServiceAccountFilePath, _firebaseOptions.Value.BucketName);
         private string _connectionString => _configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("No given connection string.");
-        private string _dropBoxApiKey => _dropBoxSettings.Value.ApiKey;
-        private UserEngine userEngine;
+        private UserEngine _userEngine;
+        public List<ImageFile> UserImageFiles {
+            get
+            {
+                return _userEngine.UserImageFiles;
+            }
+        }
 
-        public HomeController(ILogger<HomeController> logger, IOptions<DropBoxSettings> options, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger, IOptions<GoogleFirebaseSettings> options, IConfiguration config)
         {
             _logger = logger;
             _configuration = config;
-            _dropBoxSettings = options;
+            _firebaseOptions = options;
         }
 
         public IActionResult Index()
@@ -47,24 +53,26 @@ namespace FileHider.Web.MVC.Controllers
 
         public void InitializeUserEngine()
         {
-            this.userEngine = new UserEngine(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new ArgumentNullException("Not signed in an user profile."), _connectionString, _dropBoxApiKey);
+            this._userEngine = new UserEngine(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) 
+                ?? throw new ArgumentNullException("Not signed in an user profile.")
+                , _connectionString, _options);
         }
         public void InitializeUserEngine(string userId)
         {
-            this.userEngine = new UserEngine(userId, _connectionString, _dropBoxApiKey);
+            this._userEngine = new UserEngine(userId, _connectionString, _options);
         }
 
-        public void HideInImage(string content, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
+        public void HideMessageInImage(string content, StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
         {
-            if (userEngine is null) throw new ArgumentNullException("Not signed in an user profile.");
+            if (_userEngine is null) throw new ArgumentNullException("Not signed in an user profile.");
 
-            userEngine.HideMessageInImage(content, stegoImage, imageNameWithExt, imageStegoStrategy);
+            _userEngine.HideMessageInImage(content, stegoImage, imageNameWithExt, pixelSpacing);
         }
-        public void HideInImage(byte[] fileBytes, string fileNameWithExt, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
+        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
         {
-            if (userEngine is null) throw new ArgumentNullException("Not signed in an user profile.");
+            if (_userEngine is null) throw new ArgumentNullException("Not signed in an user profile.");
             
-            userEngine.HideFileInImage(fileBytes, fileNameWithExt, stegoImage, imageNameWithExt, imageStegoStrategy);
+            _userEngine.HideFileInImage(fileBytes, fileNameWithExt, stegoImage, imageNameWithExt, pixelSpacing);
         }
     }
 }

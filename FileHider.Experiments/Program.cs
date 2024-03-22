@@ -1,9 +1,14 @@
 ﻿using FileHider.Data;
 using FileHider.Data.Models;
 using FileHider.Web.MVC.Controllers;
+using FileHider.Web.MVC.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using StegoSharp;
+using StegoSharp.Enums;
 
 namespace FileHider.Experiments
 {
@@ -43,10 +48,29 @@ namespace FileHider.Experiments
             ILoggerFactory loggerFactory = new LoggerFactory();
             logger = new Logger<HomeController>(loggerFactory);
 
-            var controller = new HomeController(logger);
-            controller.InitializeUserEngine(connectionString, "1c2ee617-7134-44cd-920a-ee15408cff9a");
+            var config = new ConfigurationBuilder()
+            .AddInMemoryCollection()
+            .Build();
 
+            config["ConnectionStrings:DefaultConnection"] = connectionString;
 
+            var firebaseSettings = new GoogleFirebaseSettings { ServiceAccountFilePath = Console.ReadLine(), BucketName = Console.ReadLine() };
+            var options = Options.Create(firebaseSettings);
+
+            var controller = new HomeController(logger, options, config);
+            controller.InitializeUserEngine("1c2ee617-7134-44cd-920a-ee15408cff9a");
+
+            var imagePath = "C:\\Users\\Shadow Dragon\\Desktop\\test.jpg";
+            if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
+
+            var image = new StegoImage(imagePath);
+            var imageStegoStrategy = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
+            image.Strategy = imageStegoStrategy.AsStegoStrategy;
+
+            controller.HideMessageInImage("test123", image, "test.jpg", 1);
+
+            Console.Write("Download link: ");
+            controller.UserImageFiles.ForEach(i => Console.WriteLine(i.DownloadLink));
         }
     }
 }

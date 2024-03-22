@@ -60,7 +60,14 @@ namespace FileHider.Data.Models
             PixelSelection = p => p.Index % pixelSpacing == 0;
             PixelSpacing = pixelSpacing;
         }
-
+        public ImageStegoStrategy(StegoStrategy stegoStrategy, int pixelSpacing)
+        {
+            ColorChannels = stegoStrategy.ColorChannels;
+            BitsPerChannel = stegoStrategy.BitsPerChannel;
+            pixelSpacing = Math.Max(1, pixelSpacing);
+            PixelSelection = p => p.Index % pixelSpacing == 0;
+            PixelSpacing = pixelSpacing;
+        }
         private StegoSharp.Enums.ColorChannel[] StringToColorChannels(string colorChannelsString)
         {
             string[] channelStrings = colorChannelsString.Split(',');

@@ -24,13 +24,7 @@ namespace FileHider.Data.Models
         [Column("total_byte_capacity")]
         public int TotalByteCapacity { get; init; }
         [Column("byte_capacity_left")]
-        public int ByteCapacityLeft {
-            get
-            {
-                int byteSize = HiddenInformation is not null ? HiddenInformation.Size : 0;
-                return TotalByteCapacity - byteSize;
-            }
-        }
+        public int ByteCapacityLeft { get; private set; }
         [Column("user_id")]
         public string UserId { get; init; }
         public ImageFile(string userId, int stegoStrategyId, string downloadLink, int hiddenInformationId, int totalByteCapacity)
@@ -40,11 +34,14 @@ namespace FileHider.Data.Models
             DownloadLink = downloadLink;
             HiddenInformationId = hiddenInformationId;
             TotalByteCapacity = totalByteCapacity;
+            ByteCapacityLeft = TotalByteCapacity;
         }
 
         public void LoadHiddenInformation(UserDbContext dbContext)
         {
-            this.HiddenInformation = dbContext.HiddenInformations.First(h => h.Id == this.Id);
+            this.HiddenInformation = dbContext.HiddenInformations.First(h => h.Id == this.HiddenInformationId);
+            int byteSize = this.HiddenInformation is not null ? this.HiddenInformation.Size : 0;
+            this.ByteCapacityLeft = this.TotalByteCapacity - byteSize;
         }
     }
 }

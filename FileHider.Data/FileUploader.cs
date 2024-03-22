@@ -1,38 +1,46 @@
-﻿using Dropbox.Api;
-using Dropbox.Api.Files;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using StegoSharp;
 using System.Configuration;
+using System.Net;
 
 namespace FileHider.Data
 {
     public class FileUploader
     {
-        private DropboxClient _dropBoxClient;
-
-        private string _dropBoxApiKey;
-        public FileUploader(string dropBoxApiKey)
+        private readonly StorageClient _storageClient;
+        private string _bucketName;
+        public FileUploader((string filePath, string bucketName) options)
         {
-            _dropBoxApiKey = dropBoxApiKey;
-            _dropBoxClient = new DropboxClient(_dropBoxApiKey);
+            var credential = GoogleCredential.FromFile(options.filePath);
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = credential
+            });
+
+            _storageClient = StorageClient.Create(credential);
+            _bucketName = options.bucketName;
         }
 
-        public Task<string> UploadImage(StegoImage stegoImage, string imageNameWithExt)
+        public async Task<string> UploadImageAsync(StegoImage stegoImage, string imageNameWithExt)
         {
-            return UploadFile(stegoImage.ExtractBytes().ToArray(), imageNameWithExt);
+            return await UploadFileAsync(stegoImage.ExtractBytes().ToArray(), imageNameWithExt);
         }
-        public async Task<string> UploadFile(byte[] fileBytes, string fileNameWithExt)
+
+        public async Task<string> UploadFileAsync(byte[] fileBytes, string fileNameWithExt)
         {
             using (var mem = new MemoryStream(fileBytes))
             {
-                var filePath = "Files" + "/" + fileNameWithExt;
-                var updated = await _dropBoxClient.Files.UploadAsync(
-                    filePath,
-                    WriteMode.Overwrite.Instance,
-                    body: mem);
-                var result = _dropBoxClient.Sharing.CreateSharedLinkWithSettingsAsync(filePath).Result;
-                return result.Url;
+                var filePath = "Files/" + fileNameWithExt;
+
+                await _storageClient.UploadObjectAsync(_bucketName, filePath, null, mem);
+
+                var downloadUrl = $"https://firebasestorage.googleapis.com/v0/b/{_bucketName}/o/{Uri.EscapeDataString(filePath)}?alt=media";
+
+                return downloadUrl;
             }
         }
     }
