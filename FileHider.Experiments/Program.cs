@@ -1,13 +1,20 @@
 ﻿using FileHider.Data;
 using FileHider.Data.Models;
+using FileHider.Web.MVC.Controllers;
+using FileHider.Web.MVC.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using StegoSharp;
+using StegoSharp.Enums;
 
 namespace FileHider.Experiments
 {
     internal class Program
     {
+        private static ILogger<HomeController> logger;
         static void Main(string[] args)
         {
             const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
@@ -36,9 +43,43 @@ namespace FileHider.Experiments
 
             //Console.WriteLine(dbContext.Users.Where(u => u.FirstName == "gosho").First().Id);
 
-            dbContext.SaveChanges();
-            */
-            
+            dbContext.SaveChanges();*/
+
+            /*ILoggerFactory loggerFactory = new LoggerFactory();
+            logger = new Logger<HomeController>(loggerFactory);
+
+            var config = new ConfigurationBuilder()
+            .AddInMemoryCollection()
+            .Build();
+
+            config["ConnectionStrings:DefaultConnection"] = connectionString;
+
+            var firebaseSettings = new GoogleFirebaseSettings { ServiceAccountFilePath = Console.ReadLine(), BucketName = Console.ReadLine() };
+            var options = Options.Create(firebaseSettings);
+
+            var controller = new HomeController(logger, options, config);
+            controller.InitializeUserEngine("1c2ee617-7134-44cd-920a-ee15408cff9a");
+
+            var imagePath = "C:\\Users\\Shadow Dragon\\Desktop\\test.jpg";
+            if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
+
+            var image = new StegoImage(imagePath);
+            var imageStegoStrategy = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
+            image.Strategy = imageStegoStrategy.AsStegoStrategy;
+
+            controller.HideMessageInImage("test123", image, "test.jpg", 1);
+
+            var imagePath2 = "C:\\Users\\Shadow Dragon\\Desktop\\test2.jpg";
+            if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
+
+            var image2 = new StegoImage(imagePath2);
+            var imageStegoStrategy2 = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
+            image.Strategy = imageStegoStrategy2.AsStegoStrategy;
+
+            var hiddenMessageLength = 7;
+
+            var hiddenMessage = controller.ExtractHiddenMessageFromImage(hiddenMessageLength, image2);
+            Console.WriteLine(hiddenMessage);*/
         }
     }
 }

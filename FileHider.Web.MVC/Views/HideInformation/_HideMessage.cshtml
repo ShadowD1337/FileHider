@@ -1,0 +1,51 @@
+﻿<div class="message-container">
+    <!-- File dropping area -->
+    <div class="file-dropping-area">
+        <label for="uploadedFile">Drag & drop or click to select</label>
+        <input type="file" id="uploadedFile" accept="image/*">
+        <!-- Image preview will be displayed here -->
+        <img id="imagePreview" src="#" alt="Image Preview" style="display: none;">
+    </div>
+
+    <!-- Color channels dropdown -->
+    <div class="color-channels-checkboxes">
+        <label for="colorChannels">Color Channels:</label>
+        <input type="checkbox" id="redChannel" value="Red" class="color-channel-checkbox">
+        <label for="redChannel">Red</label>
+        <input type="checkbox" id="greenChannel" value="Green" class="color-channel-checkbox">
+        <label for="greenChannel">Green</label>
+        <input type="checkbox" id="blueChannel" value="Blue" class="color-channel-checkbox">
+        <label for="blueChannel">Blue</label>
+        <input type="checkbox" id="alphaChannel" value="Alpha" class="color-channel-checkbox">
+        <label for="alphaChannel">Alpha</label>
+    </div>
+
+
+    <!-- Bits per channel dropdown -->
+    <div class="dropdown">
+        <label for="bitsPerChannel">Bits Per Channel:</label>
+        <select id="bitsPerChannel" class="bits-per-channel-dropdown">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+    </div>
+
+    <!-- Pixel spacing input field -->
+    <div class="pixel-spacing">
+        <label for="pixelSpacing">Pixel Spacing:</label>
+        <input type="number" id="pixelSpacing" class="pixel-spacing-input" value="1">
+        <!-- Add arrows for increasing/decreasing if needed -->
+    </div>
+
+    <!-- Message text field -->
+    <input type="text" id="message" class="message-input" placeholder="Message">
+    
+    <!-- Embed message button -->
+    <button class="embed-button">Embed Message In Image</button>
+</div>

@@ -9,10 +9,10 @@ namespace FileHider.Data.Models
 {
     public class HiddenMessage : HiddenInformation
     {
-        public new int Size { get => Encoding.ASCII.GetByteCount(Content); }
 
         public HiddenMessage(string content) : base(content)
         {
+            base.Size = Encoding.ASCII.GetByteCount(content);
         }
     }
 }
