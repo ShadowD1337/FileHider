@@ -3,6 +3,7 @@ using FileHider.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StegoSharp;
+using System.Text;
 using static Dropbox.Api.Files.SearchMatchType;
 
 namespace FileHider.Core
@@ -39,7 +40,7 @@ namespace FileHider.Core
             _stegoEngine = new StegoEngine(userId, options);
         }
 
-        public void HideMessageInImage(string content, StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
+        public void HideMessageInImage(string content, FileHider.Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
         {
             var imageStegoStrategy = new ImageStegoStrategy(stegoImage.Strategy, pixelSpacing);
             _stegoEngine.HideMessageInImage(content, stegoImage, imageNameWithExt, imageStegoStrategy);
@@ -61,7 +62,7 @@ namespace FileHider.Core
 
             dbContext.SaveChanges();
         }
-        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
+        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, FileHider.Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, int pixelSpacing)
         {
             var imageStegoStrategy = new ImageStegoStrategy(stegoImage.Strategy, pixelSpacing);
             _stegoEngine.HideFileInImage(fileBytes, fileNameWithExt, stegoImage, imageNameWithExt, imageStegoStrategy);
@@ -84,6 +85,17 @@ namespace FileHider.Core
             dbContext.ImageFiles.Add(imageFile);
 
             dbContext.SaveChanges();
+        }
+
+        public string ExtractHiddenMessageFromImage(int hiddenMessageLength, FileHider.Data.StegoOverwrite.StegoImage stegoImage)
+        {
+            return Encoding.Default.GetString(_stegoEngine.ExtractBytesFromStegoImage(hiddenMessageLength, stegoImage));
+        }
+
+        public string ExtractHiddenFileFromImage(int fileByteSize, string fileNameWithExt, FileHider.Data.StegoOverwrite.StegoImage stegoImage)
+        {
+            var fileBytes = _stegoEngine.ExtractBytesFromStegoImage(fileByteSize, stegoImage);
+            return _stegoEngine.GenerateDownloadLink(fileBytes, fileNameWithExt);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace FileHider.Web.MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

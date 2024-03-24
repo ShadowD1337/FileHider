@@ -25,7 +25,7 @@ namespace FileHider.Data
             _bucketName = options.bucketName;
         }
 
-        public async Task<string> UploadImageAsync(StegoImage stegoImage, string imageNameWithExt)
+        public async Task<string> UploadImageAsync(Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt)
         {
             return await UploadFileAsync(stegoImage.ExtractBytes().ToArray(), imageNameWithExt);
         }

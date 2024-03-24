@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Dash Board";
+}
+<h1 class="dashboard-title">@ViewData["Title"]</h1>
+
+<div class="dashboard-container">
+    <div class="Btns">
+        <button class="dashBtn" id="btn_hideInformationInImage" data-action-url="@Url.Action("btn_hideInformationInImage", "DashBoard")">Hide Information In Image</button><br>
+        <button class="dashBtn" id="btn2" data-action-url="@Url.Action("Button2", "DashBoard")">Button_2</button><br>
+        <button class="dashBtn" id="btn3" data-action-url="@Url.Action("Button3", "DashBoard")">Button_3</button>
+    </div>
+
+    <div class="dashBoardPartialViewContainer">
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.dashBtn').click(function () {
+                $('.dashBtn').removeClass('selected');
+                $(this).addClass('selected');
+                var actionUrl = $(this).data('action-url');
+                $('.dashBoardPartialViewContainer').load(actionUrl);
+            });
+
+            $('.dashBtn').hover(function () {
+                $(this).toggleClass('hovered');
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.hideBtn', function (e) {
+            e.preventDefault();
+            $('.hideBtn').removeClass('selected');
+            $(this).addClass('selected');
+            var actionUrl = $(this).data('action-url');
+            $('.hideInformationPartialViewContainer').load(actionUrl);
+        });
+    </script>
+    <script>
+        $(document).on('click', '.embed-button', function () {
+            // Retrieve values from checked checkboxes
+            var checkedChannels = $('.color-channel-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+
+            // Retrieve values from other fields
+            var bitsPerChannel = $('#bitsPerChannel').val();
+            var pixelSpacing = $('#pixelSpacing').val();
+            var message = $('#message').val();
+
+            // Create FormData object to send file along with other data
+            var formData = new FormData();
+            formData.append('colorChannels', checkedChannels);
+            formData.append('bitsPerChannel', bitsPerChannel);
+            formData.append('pixelSpacing', pixelSpacing);
+            formData.append('message', message);
+            formData.append('file', $('#uploadedFile')[0].files[0]); // Assuming the file input has an id 'uploadedFile'
+
+            // Call the action method in the controller to embed message in the image
+            $.ajax({
+                url: '@Url.Action("EmbedMessageInImage", "HideInformation")',
+                type: 'POST',
+                processData: false,  // Prevent jQuery from processing the data
+                contentType: false,  // Prevent jQuery from setting content type
+                data: formData,      // Send FormData object
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        });
+    </script>
+}

@@ -45,7 +45,7 @@ namespace FileHider.Experiments
 
             dbContext.SaveChanges();*/
 
-            ILoggerFactory loggerFactory = new LoggerFactory();
+            /*ILoggerFactory loggerFactory = new LoggerFactory();
             logger = new Logger<HomeController>(loggerFactory);
 
             var config = new ConfigurationBuilder()
@@ -69,8 +69,17 @@ namespace FileHider.Experiments
 
             controller.HideMessageInImage("test123", image, "test.jpg", 1);
 
-            Console.Write("Download link: ");
-            controller.UserImageFiles.ForEach(i => Console.WriteLine(i.DownloadLink));
+            var imagePath2 = "C:\\Users\\Shadow Dragon\\Desktop\\test2.jpg";
+            if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
+
+            var image2 = new StegoImage(imagePath2);
+            var imageStegoStrategy2 = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
+            image.Strategy = imageStegoStrategy2.AsStegoStrategy;
+
+            var hiddenMessageLength = 7;
+
+            var hiddenMessage = controller.ExtractHiddenMessageFromImage(hiddenMessageLength, image2);
+            Console.WriteLine(hiddenMessage);*/
         }
     }
 }

@@ -19,20 +19,25 @@ namespace FileHider.Core
             _fileUploader = new FileUploader(options);
         }
 
-        public void HideMessageInImage(string content, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
+        public void HideMessageInImage(string content, Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
         {
             stegoImage.Strategy = imageStegoStrategy.AsStegoStrategy;
 
             stegoImage.EmbedPayload(content);
         }
-        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
+        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
         {
             stegoImage.Strategy = imageStegoStrategy.AsStegoStrategy;
 
             stegoImage.EmbedPayload(fileBytes);
         }
 
-        public string GenerateDownloadLink(StegoImage stegoImage, string imageNameWithExt)
+        public byte[] ExtractBytesFromStegoImage(int byteCount, Data.StegoOverwrite.StegoImage stegoImage)
+        {
+            return stegoImage.ExtractBytes().Take(byteCount).ToArray();
+        }
+
+        public string GenerateDownloadLink(Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt)
         {
             return _fileUploader.UploadImageAsync(stegoImage, imageNameWithExt).Result;
         }
