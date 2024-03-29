@@ -9,14 +9,12 @@ using System.Threading.Tasks;
 
 namespace FileHider.Core
 {
-    public class StegoEngine
+    public class StegoEngine : IStegoEngine
     {
-        private string _userId;
-        private FileUploader _fileUploader;
-        public StegoEngine(string userId, (string filePath, string bucketName) options)
+        private IFileUploader _fileUploader;
+        public StegoEngine(IFileUploader fileUploader)
         {
-            _userId = userId;
-            _fileUploader = new FileUploader(options);
+            _fileUploader = fileUploader;
         }
 
         public void HideMessageInImage(string content, Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
@@ -32,14 +30,14 @@ namespace FileHider.Core
             stegoImage.EmbedPayload(fileBytes);
         }
 
-        public byte[] ExtractBytesFromStegoImage(int byteCount, Data.StegoOverwrite.StegoImage stegoImage)
+        public byte[] ExtractBytesFromStegoImage(int byteCount, Data.StegoOverwrite.StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy)
         {
-            return stegoImage.ExtractBytes().Take(byteCount).ToArray();
+            return stegoImage.ExtractBytes().ToArray().Take(byteCount).ToArray();
         }
 
         public string GenerateDownloadLink(Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt)
         {
-            return _fileUploader.UploadImageAsync(stegoImage, imageNameWithExt).Result;
+            return _fileUploader.UploadImageAsync(stegoImage.AsByteArray(), imageNameWithExt).Result;
         }
         public string GenerateDownloadLink(byte[] fileBytes, string fileNameWithExt)
         {

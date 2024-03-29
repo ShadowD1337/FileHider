@@ -1,20 +1,25 @@
-﻿using FileHider.Data;
+﻿using FileHider.Core;
+using FileHider.Data;
 using FileHider.Data.Models;
 using FileHider.Web.MVC.Controllers;
 using FileHider.Web.MVC.Settings;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moq;
 using StegoSharp;
 using StegoSharp.Enums;
+using System.Drawing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileHider.Experiments
 {
     internal class Program
     {
-        private static ILogger<HomeController> logger;
+        private static ILogger<HideInformationController> logger;
         static void Main(string[] args)
         {
             const string connectionString = "Server=localhost;Database=filehider;Uid=root;Pwd=root;";
@@ -45,8 +50,8 @@ namespace FileHider.Experiments
 
             dbContext.SaveChanges();*/
 
-            /*ILoggerFactory loggerFactory = new LoggerFactory();
-            logger = new Logger<HomeController>(loggerFactory);
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            logger = new Logger<HideInformationController>(loggerFactory);
 
             var config = new ConfigurationBuilder()
             .AddInMemoryCollection()
@@ -57,22 +62,47 @@ namespace FileHider.Experiments
             var firebaseSettings = new GoogleFirebaseSettings { ServiceAccountFilePath = Console.ReadLine(), BucketName = Console.ReadLine() };
             var options = Options.Create(firebaseSettings);
 
-            var controller = new HomeController(logger, options, config);
-            controller.InitializeUserEngine("1c2ee617-7134-44cd-920a-ee15408cff9a");
+            var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
+            optionsBuilder.LogTo(Console.WriteLine, minimumLevel: LogLevel.Information);
+            optionsBuilder.UseMySQL(connectionString);
 
-            var imagePath = "C:\\Users\\Shadow Dragon\\Desktop\\test.jpg";
+            using var dbContext = new UserDbContext(optionsBuilder.Options);
+
+
+
+
+            var user = new IdentityUser();
+            user.Id = "1";
+            user.UserName = "Gosho";
+            user.Email = "test@test.test";
+            var fileUploadeer = new FileUploader();
+            var stegoEngine = new StegoEngine(fileUploadeer);
+            var userEngine = new UserEngine(user, stegoEngine, dbContext);
+            var controller = new HideInformationController(logger, userEngine);
+
+
+
+
+            var imagePath = "C:\\Users\\Shadow Dragon\\Desktop\\rly.png";
             if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
 
-            var image = new StegoImage(imagePath);
+            var image = new FileHider.Data.StegoOverwrite.StegoImage(new Bitmap(imagePath));
             var imageStegoStrategy = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
-            image.Strategy = imageStegoStrategy.AsStegoStrategy;
 
-            controller.HideMessageInImage("test123", image, "test.jpg", 1);
+            controller.HideMessageInImage("test457", image, imageStegoStrategy, "rly.png");
+
+            Console.WriteLine(controller.ExtractHiddenMessageFromImage(7, image, imageStegoStrategy));
+
+            image.Save("C:\\Users\\Shadow Dragon\\Desktop\\rly34.png");
+
+
+
+            /*
 
             var imagePath2 = "C:\\Users\\Shadow Dragon\\Desktop\\test2.jpg";
             if (!File.Exists(imagePath)) throw new ArgumentException("No such image file.");
 
-            var image2 = new StegoImage(imagePath2);
+            var image2 = new FileHider.Data.StegoOverwrite.StegoImage(new Bitmap(imagePath2));
             var imageStegoStrategy2 = new ImageStegoStrategy("Red,Green,Blue", 2, 1);
             image.Strategy = imageStegoStrategy2.AsStegoStrategy;
 

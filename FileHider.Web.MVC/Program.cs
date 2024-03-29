@@ -1,3 +1,5 @@
+using FileHider.Core;
+using FileHider.Data;
 using FileHider.Web.MVC.Data;
 using FileHider.Web.MVC.Settings;
 using Microsoft.AspNetCore.Identity;
@@ -11,15 +13,21 @@ namespace FileHider.Web.MVC
         {
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.   builder.Configuration.GetConnectionString("DefaultConnection")
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Services.AddDbContext<UserDbContext>(options =>
                 options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("No DefaultConnection connection string found.")));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
             
             builder.Services.Configure<GoogleFirebaseSettings>(builder.Configuration.GetSection(GoogleFirebaseSettings.Section));
 
             builder.Services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<UserDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<UserDbContext>();
+            builder.Services.AddScoped<IUserEngine, UserEngine>();
+            builder.Services.AddScoped<IStegoEngine, StegoEngine>();
+            builder.Services.AddScoped<IFileUploader, FileUploader>();
+            builder.Services.AddScoped<IdentityUser>();
 
             var app = builder.Build();
 

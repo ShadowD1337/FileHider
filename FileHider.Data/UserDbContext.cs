@@ -1,4 +1,5 @@
 ﻿using FileHider.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FileHider.Data
 {
-    public class UserDbContext : DbContext
+    public class UserDbContext : IdentityDbContext
     {
         public DbSet<HiddenInformation> HiddenInformations { get; set; }
         public DbSet<ImageFile> ImageFiles { get; set; }
