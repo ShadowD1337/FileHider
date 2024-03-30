@@ -1,0 +1,25 @@
+﻿@using FileHider.Data.Models
+@model List<ImageFile>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2>User Images</h2>
+
+            <!-- List of user images -->
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Image ID</th>
+                            <th>Download Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="imageList">
+                        <!-- Data will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

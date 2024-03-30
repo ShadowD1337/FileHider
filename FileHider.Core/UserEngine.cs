@@ -1,86 +1,88 @@
 ﻿using FileHider.Data;
 using FileHider.Data.Models;
+using FileHider.Data.StegoOverwrite;
+using FirebaseAdmin.Messaging;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SkiaSharp;
 using StegoSharp;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace FileHider.Core
 {
     public class UserEngine : IUserEngine
     {
-        private IdentityUser _user;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private UserDbContext _dbContext;
-        public ImageFile[] UserImageFiles
+        public ImageFile[] UserImageFiles()
         {
-            get
-            {
-                return _dbContext.ImageFiles.Where(i => i.UserId == _user.Id).ToArray();
-            }
+            return _dbContext.ImageFiles.Where(i => i.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToArray();
         }
 
         private IStegoEngine _stegoEngine;
-        public UserEngine(IdentityUser user, IStegoEngine stegoEngine, UserDbContext dbContext)
+        private IFileUploader _fileUploader;
+        public UserEngine(IHttpContextAccessor httpContextAccessor, IStegoEngine stegoEngine, UserDbContext dbContext, IFileUploader fileUploader)
         {
-            _user = user;
+            _httpContextAccessor = httpContextAccessor;
             _stegoEngine = stegoEngine;
             _dbContext = dbContext;
+            _fileUploader = fileUploader;
         }
 
-        public void HideMessageInImage(string content, FileHider.Data.StegoOverwrite.StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy, string imageNameWithExt)
+        public void HideMessageInImage(IFormFile image, string encryptionKey, string message)
         {
-            _stegoEngine.HideMessageInImage(content, stegoImage, imageNameWithExt, imageStegoStrategy);
+            Bitmap imageBitmap;
+            using MemoryStream memoryStream = new MemoryStream();
+            image.CopyTo(memoryStream);
+            memoryStream.Position = 0;
+            imageBitmap = new Bitmap(memoryStream);
 
-            _dbContext.ImageStegoStrategies.Add(imageStegoStrategy);
+            /*EncoderParameters encoderParams = new EncoderParameters(1);
+            encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Compression, 0);
+            ImageCodecInfo codecInfo = ImageCodecInfo.GetImageEncoders().FirstOrDefault(codec => codec.FormatID == imageBitmap.RawFormat.Guid);
+            imageBitmap.Save("C:\\Users\\Shadow Dragon\\Desktop\\test69.jpg", codecInfo, encoderParams);*/
 
-            var hiddenMessage = new HiddenMessage(content);
-            _dbContext.HiddenInformations.Add(hiddenMessage);
+            _stegoEngine.HideMessageInImage(ref imageBitmap, encryptionKey, message);
 
-            // We have to save the DB changes so hiddenMessage can get it's autoassigned ID
-            _dbContext.SaveChanges();
+            byte[] fileBytes;
 
-            string downloadLink = _stegoEngine.GenerateDownloadLink(stegoImage, imageNameWithExt);
+            using MemoryStream memoryStream2 = new MemoryStream();
+            EncoderParameters encoderParams = new EncoderParameters(1);
+            encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Compression, 0);
+            ImageCodecInfo codecInfo = ImageCodecInfo.GetImageEncoders().FirstOrDefault(codec => codec.FormatID == imageBitmap.RawFormat.Guid);
+            imageBitmap.Save(memoryStream2, codecInfo, encoderParams);
 
-            var imageFile = new ImageFile(_user.Id, imageStegoStrategy.Id, downloadLink, hiddenMessage.Id, Convert.ToInt32(stegoImage.ByteCapacity));
-            imageFile.LoadHiddenInformation(_dbContext);
+            fileBytes = memoryStream2.ToArray();
+
+            string downloadLink = _fileUploader.UploadFileAsync(fileBytes, image.FileName).Result;
+
+            var imageFile = new ImageFile(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier), downloadLink);
             _dbContext.ImageFiles.Add(imageFile);
 
-            _dbContext.SaveChanges();
-        }
-        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, FileHider.Data.StegoOverwrite.StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy, string imageNameWithExt)
-        {
-            _stegoEngine.HideFileInImage(fileBytes, fileNameWithExt, stegoImage, imageNameWithExt, imageStegoStrategy);
-
-            _dbContext.ImageStegoStrategies.Add(imageStegoStrategy);
-
-            string downloadLinkHiddenFile = _stegoEngine.GenerateDownloadLink(fileBytes, imageNameWithExt);
-
-            var hiddenFile = new HiddenFile(downloadLinkHiddenFile, fileBytes.Length);
-            _dbContext.HiddenInformations.Add(hiddenFile);
-
-            // We have to save the DB changes so hiddenMessage can get it's autoassigned ID
-            _dbContext.SaveChanges();
-
-            string downloadLinkImage = _stegoEngine.GenerateDownloadLink(fileBytes, imageNameWithExt);
-
-            var imageFile = new ImageFile(_user.Id, imageStegoStrategy.Id, downloadLinkImage, hiddenFile.Id, Convert.ToInt32(stegoImage.ByteCapacity));
-            imageFile.LoadHiddenInformation(_dbContext);
-            _dbContext.ImageFiles.Add(imageFile);
+            imageBitmap.Dispose();
 
             _dbContext.SaveChanges();
         }
 
-        public string ExtractHiddenMessageFromImage(int hiddenMessageLength, FileHider.Data.StegoOverwrite.StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy)
+        public string ExtractHiddenMessageFromImage(IFormFile image, string password)
         {
-            return Encoding.Default.GetString(_stegoEngine.ExtractBytesFromStegoImage(hiddenMessageLength, stegoImage, imageStegoStrategy));
-        }
+            Bitmap imageBitmap;
+            MemoryStream memoryStream = new MemoryStream();
+            image.CopyTo(memoryStream);
+            imageBitmap = new Bitmap(memoryStream);
 
-        public string ExtractHiddenFileFromImage(int fileByteSize, string fileNameWithExt, FileHider.Data.StegoOverwrite.StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy)
-        {
-            var fileBytes = _stegoEngine.ExtractBytesFromStegoImage(fileByteSize, stegoImage, imageStegoStrategy);
-            return _stegoEngine.GenerateDownloadLink(fileBytes, fileNameWithExt);
+            string result = _stegoEngine.ExtractHiddenMessageFromImage(imageBitmap, password);
+
+            memoryStream.Dispose();
+
+            return result;
         }
     }
 }

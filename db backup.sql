@@ -207,7 +207,7 @@ CREATE TABLE `aspnetusers` (
 
 LOCK TABLES `aspnetusers` WRITE;
 /*!40000 ALTER TABLE `aspnetusers` DISABLE KEYS */;
-INSERT INTO `aspnetusers` VALUES ('1c2ee617-7134-44cd-920a-ee15408cff9a','abv@gmail.com','ABV@GMAIL.COM','abv@gmail.com','ABV@GMAIL.COM',_binary '\0','AQAAAAIAAYagAAAAELzg/nKOi/nzkJ1HcUNeney0y/sCbVtUpCLdPBwANOCVOrrHhIy34lTHpsHnZeY+2w==','F6U6X4NPWCO4IODCNFEMBJAMD2MQYPTG','a461ac52-c832-4b6d-9adc-67a8846ddc93',NULL,_binary '\0',_binary '\0',NULL,_binary '',0),('7807db75-37f0-4ab2-950c-ae82eed22f0d','12345@abv.bg','12345@ABV.BG','12345@abv.bg','12345@ABV.BG',_binary '\0','AQAAAAIAAYagAAAAEB8bSa2VOyXS2j42TZzQ0WMpuZw+14PpUGBCG8YumJ4D9CP3xQdodXjcxBD7Wuhl2g==','7HVFSVRHBSHMMT66O7FLALXWREYKGDBI','33dab7c3-f889-430b-9ba3-69450cdda63f',NULL,_binary '\0',_binary '\0',NULL,_binary '',0);
+INSERT INTO `aspnetusers` VALUES ('1c2ee617-7134-44cd-920a-ee15408cff9a','abv@gmail.com','ABV@GMAIL.COM','abv@gmail.com','ABV@GMAIL.COM',_binary '\0','AQAAAAIAAYagAAAAELzg/nKOi/nzkJ1HcUNeney0y/sCbVtUpCLdPBwANOCVOrrHhIy34lTHpsHnZeY+2w==','F6U6X4NPWCO4IODCNFEMBJAMD2MQYPTG','a461ac52-c832-4b6d-9adc-67a8846ddc93',NULL,_binary '\0',_binary '\0',NULL,_binary '',0),('283044b4-2e98-482b-b072-12ffb9f5b79c','Gosho','GOSHO','test@test.test','TEST@TEST.TEST',_binary '\0','AQAAAAIAAYagAAAAEB8bSa2VOyXS2j42TZzQ0WMpuZw+14PpUGBCG8YumJ4D9CP3xQdodXjcxBD7Wuhl2g==','7HVFSVRHBSHMMT66O7FLALXWREYKGDBA','33dab7c3-f889-430b-9ba3-69450cdda63g',NULL,_binary '\0',_binary '\0',NULL,_binary '',0),('7807db75-37f0-4ab2-950c-ae82eed22f0d','12345@abv.bg','12345@ABV.BG','12345@abv.bg','12345@ABV.BG',_binary '\0','AQAAAAIAAYagAAAAEB8bSa2VOyXS2j42TZzQ0WMpuZw+14PpUGBCG8YumJ4D9CP3xQdodXjcxBD7Wuhl2g==','7HVFSVRHBSHMMT66O7FLALXWREYKGDBI','33dab7c3-f889-430b-9ba3-69450cdda63f',NULL,_binary '\0',_binary '\0',NULL,_binary '',0);
 /*!40000 ALTER TABLE `aspnetusers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,32 +238,6 @@ LOCK TABLES `aspnetusertokens` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `hiddeninformations`
---
-
-DROP TABLE IF EXISTS `hiddeninformations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `hiddeninformations` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `size` int NOT NULL,
-  `content` mediumtext,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `hiddeninformations`
---
-
-LOCK TABLES `hiddeninformations` WRITE;
-/*!40000 ALTER TABLE `hiddeninformations` DISABLE KEYS */;
-INSERT INTO `hiddeninformations` VALUES (1,4,'test'),(8,0,'test123'),(9,0,'test123'),(10,0,'test123'),(11,0,'test123'),(12,0,'test123'),(13,0,'test123'),(14,0,'test123'),(15,0,'test123'),(16,0,'test123'),(17,0,'test123'),(18,10,'popoppopop');
-/*!40000 ALTER TABLE `hiddeninformations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `imagefiles`
 --
 
@@ -272,21 +246,13 @@ DROP TABLE IF EXISTS `imagefiles`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `imagefiles` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `stego_strat_id` int DEFAULT NULL,
   `download_link` varchar(200) DEFAULT NULL,
-  `hidden_info_id` int DEFAULT NULL,
-  `total_byte_capacity` int DEFAULT NULL,
-  `byte_capacity_left` int NOT NULL,
   `user_id` varchar(256) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `hiddeninformation_hiddeninfo_id_idx` (`hidden_info_id`),
-  KEY `imagestegostrategies_stegostrategy_id_idx` (`stego_strat_id`),
   KEY `aspnetusers_user_id_idx` (`user_id`),
-  CONSTRAINT `aspnetusers_user_id` FOREIGN KEY (`user_id`) REFERENCES `aspnetusers` (`Id`),
-  CONSTRAINT `hiddeninformation_hiddeninfo_id` FOREIGN KEY (`hidden_info_id`) REFERENCES `hiddeninformations` (`id`),
-  CONSTRAINT `imagestegostrategies_stegostrategy_id` FOREIGN KEY (`stego_strat_id`) REFERENCES `imagestegostrategies` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `aspnetusers_user_id` FOREIGN KEY (`user_id`) REFERENCES `aspnetusers` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,35 +261,8 @@ CREATE TABLE `imagefiles` (
 
 LOCK TABLES `imagefiles` WRITE;
 /*!40000 ALTER TABLE `imagefiles` DISABLE KEYS */;
-INSERT INTO `imagefiles` VALUES (4,1,'test',1,999,0,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(5,5,'https://www.dropbox.com/scl/fi/9c4dqeknlftttuuiop0ih/test.jpg?rlkey=0tpg8k460gg9y2oq4k62isf3z&dl=0',10,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(6,6,'https://www.dropbox.com/scl/fi/9c4dqeknlftttuuiop0ih/test.jpg?rlkey=0tpg8k460gg9y2oq4k62isf3z&dl=0',11,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(7,7,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0',12,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(8,8,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0',13,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(9,9,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0',14,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(10,10,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg',15,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(11,11,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg',16,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(12,12,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg',17,230400,230400,'1c2ee617-7134-44cd-920a-ee15408cff9a'),(13,13,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media',18,230400,230390,'7807db75-37f0-4ab2-950c-ae82eed22f0d');
+INSERT INTO `imagefiles` VALUES (4,'test','1c2ee617-7134-44cd-920a-ee15408cff9a'),(5,'https://www.dropbox.com/scl/fi/9c4dqeknlftttuuiop0ih/test.jpg?rlkey=0tpg8k460gg9y2oq4k62isf3z&dl=0','1c2ee617-7134-44cd-920a-ee15408cff9a'),(6,'https://www.dropbox.com/scl/fi/9c4dqeknlftttuuiop0ih/test.jpg?rlkey=0tpg8k460gg9y2oq4k62isf3z&dl=0','1c2ee617-7134-44cd-920a-ee15408cff9a'),(7,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0','1c2ee617-7134-44cd-920a-ee15408cff9a'),(8,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0','1c2ee617-7134-44cd-920a-ee15408cff9a'),(9,'https://www.dropbox.com/scl/fi/6z4tdxxay2kslj3zmhyso/test.jpg?rlkey=klj51it1lbf3g52p44r8d8u3m&dl=0','1c2ee617-7134-44cd-920a-ee15408cff9a'),(10,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(11,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg','1c2ee617-7134-44cd-920a-ee15408cff9a'),(12,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg','1c2ee617-7134-44cd-920a-ee15408cff9a'),(13,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(16,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(17,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(18,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(19,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest456.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(23,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Frly.png?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d'),(29,'https://firebasestorage.googleapis.com/v0/b/filehider-itcareer.appspot.com/o/Files%2Ftest.jpg?alt=media','7807db75-37f0-4ab2-950c-ae82eed22f0d');
 /*!40000 ALTER TABLE `imagefiles` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `imagestegostrategies`
---
-
-DROP TABLE IF EXISTS `imagestegostrategies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `imagestegostrategies` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `color_channels` varchar(50) DEFAULT NULL,
-  `bits_per_channel` int DEFAULT NULL,
-  `pixel_spacing` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `imagestegostrategies`
---
-
-LOCK TABLES `imagestegostrategies` WRITE;
-/*!40000 ALTER TABLE `imagestegostrategies` DISABLE KEYS */;
-INSERT INTO `imagestegostrategies` VALUES (1,'R',NULL,1),(2,'Red,Green',2,1),(3,'Red,Green,Blue',2,1),(4,'Red,Green,Blue',2,1),(5,'Red,Green,Blue',2,1),(6,'Red,Green,Blue',2,1),(7,'Red,Green,Blue',2,1),(8,'Red,Green,Blue',2,1),(9,'Red,Green,Blue',2,1),(10,'Red,Green,Blue',2,1),(11,'Red,Green,Blue',2,1),(12,'Red,Green,Blue',2,1),(13,'Red,Green,Blue',2,1);
-/*!40000 ALTER TABLE `imagestegostrategies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -335,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-24  3:03:30
+-- Dump completed on 2024-03-31  0:41:39

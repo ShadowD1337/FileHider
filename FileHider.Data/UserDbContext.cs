@@ -11,9 +11,7 @@ namespace FileHider.Data
 {
     public class UserDbContext : IdentityDbContext
     {
-        public DbSet<HiddenInformation> HiddenInformations { get; set; }
         public DbSet<ImageFile> ImageFiles { get; set; }
-        public DbSet<ImageStegoStrategy> ImageStegoStrategies { get; set; }
         public UserDbContext()
         {
         }

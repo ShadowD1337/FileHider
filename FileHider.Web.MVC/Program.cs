@@ -4,6 +4,8 @@ using FileHider.Web.MVC.Data;
 using FileHider.Web.MVC.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StegSharp.Infrastructure;
+using System.Security.Claims;
 
 namespace FileHider.Web.MVC
 {
@@ -27,7 +29,8 @@ namespace FileHider.Web.MVC
             builder.Services.AddScoped<IUserEngine, UserEngine>();
             builder.Services.AddScoped<IStegoEngine, StegoEngine>();
             builder.Services.AddScoped<IFileUploader, FileUploader>();
-            builder.Services.AddScoped<IdentityUser>();
+            builder.Services.AddScoped<ClaimsPrincipal>();
+            builder.Services.AddF5Services();
 
             var app = builder.Build();
 

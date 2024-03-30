@@ -1,14 +1,10 @@
-﻿using FileHider.Data.Models;
-using FileHider.Data.StegoOverwrite;
+﻿using System.Drawing;
 
 namespace FileHider.Core
 {
     public interface IStegoEngine
     {
-        byte[] ExtractBytesFromStegoImage(int byteCount, StegoImage stegoImage, ImageStegoStrategy imageStegoStrategy);
-        string GenerateDownloadLink(byte[] fileBytes, string fileNameWithExt);
-        string GenerateDownloadLink(StegoImage stegoImage, string imageNameWithExt);
-        void HideFileInImage(byte[] fileBytes, string fileNameWithExt, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy);
-        void HideMessageInImage(string content, StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy);
+        string ExtractHiddenMessageFromImage(Bitmap bitmap, string password);
+        void HideMessageInImage(ref Bitmap image, string password, string message);
     }
 }

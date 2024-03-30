@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grizlah.Steganography.F5.StegSharp.Infrastructure" Version="1.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.3" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.3" />
   </ItemGroup>

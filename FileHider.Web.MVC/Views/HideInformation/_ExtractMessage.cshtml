@@ -1,12 +1,12 @@
 ﻿<div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <h2>Embed Message In Image</h2>
-            <form id="embedForm"> <!-- Form tag added here -->
+            <h2>Extract Message From Image</h2>
+            <form id="extractForm"> <!-- Form tag added here -->
                 <!-- File dropping area -->
                 <div class="form-group">
-                    <label for="uploadedFile">Upload Image:</label>
-                    <input type="file" id="uploadedFile" class="form-control-file" accept="image/*">
+                    <label for="uploadedFileE">Upload Image:</label>
+                    <input type="file" id="uploadedFileE" class="form-control-file" accept="image/*">
                     <!-- Image preview will be displayed here -->
                     <img id="imagePreview" src="#" alt="Image Preview" style="display: none;">
                 </div>
@@ -15,17 +15,19 @@
                     <label for="encryptionKey">Encryption Key:</label>
                     <input type="text" id="encryptionKey" class="form-control" placeholder="Encryption Key">
                 </div>
-                <!-- Message text field -->
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <input type="text" id="message" class="form-control" placeholder="Message">
-                </div>
+                
                 <br>
-                <!-- Embed message button -->
+                <!-- Extract message button -->
                 <div class="text-center mb-3"> <!-- Add margin below -->
-                    <button type="submit" class="btn btn-primary">Embed Message In Image</button>
+                    <button type="submit" class="btn btn-primary" id="extractButton">Extract Message From Image</button>
                 </div>
             </form> <!-- Form tag ends here -->
+
+            <!-- Display extracted message -->
+            <div id="extractedMessage" style="display: none;">
+                <label for="extractedMessage">Extracted Message:</label>
+                <textarea id="extractedMessageContent" class="form-control" rows="4" readonly></textarea>
+            </div>
         </div>
     </div>
 </div>

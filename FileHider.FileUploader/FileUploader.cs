@@ -21,10 +21,13 @@ namespace FileHider.Data
             _firebaseSettings = configuration.GetRequiredSection(GoogleFirebaseSettings.Section).Get<GoogleFirebaseSettings>();
 
             var credential = GoogleCredential.FromFile(_firebaseSettings.ServiceAccountFilePath);
-            FirebaseApp.Create(new AppOptions
+            if (FirebaseApp.DefaultInstance is null)
             {
-                Credential = credential
-            });
+                FirebaseApp.Create(new AppOptions
+                {
+                    Credential = credential
+                });
+            }
 
             _storageClient = StorageClient.Create(credential);
         }
