@@ -8,6 +8,8 @@ using System.Data;
 using System.Text;
 using StegoSharp;
 using Encoder = System.Drawing.Imaging.Encoder;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FileHider.Data.StegoOverwrite
 {
@@ -17,7 +19,7 @@ namespace FileHider.Data.StegoOverwrite
 
         public const int BitsInAByte = 8;
         private readonly string _path;
-        private readonly Bitmap _image;
+        public Bitmap _image;
 
         public StegoImage(Bitmap bitmap)
         {
@@ -224,8 +226,10 @@ namespace FileHider.Data.StegoOverwrite
             {
                 Param = encodingParams
             };
-
+            
             _image.Save(filename, encoder, encoderParameters);
+
+            //_image.Save(filename);
 
             return this;
         }
@@ -241,6 +245,28 @@ namespace FileHider.Data.StegoOverwrite
             }
 
             return null;
+        }
+
+        public byte[] AsByteArray()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var encoder = LocateEncoder(_image.RawFormat);
+
+                var encodingParams = new[]
+                {
+                    new EncoderParameter(Encoder.Quality, 100L),
+                    new EncoderParameter(Encoder.Compression, (long) EncoderValue.CompressionNone)
+                };
+
+                var encoderParameters = new EncoderParameters(encodingParams.Length)
+                {
+                    Param = encodingParams
+                };
+
+                _image.Save(ms, encoder, encoderParameters);
+                return ms.ToArray();
+            }
         }
 
         public bool PixelsAreEqual(StegoImage otherImage, Func<StegoPixel, bool> pixelsToCompare = null)

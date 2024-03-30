@@ -1,49 +1,83 @@
 ﻿using FileHider.Data;
 using FileHider.Data.Models;
+using Microsoft.Extensions.DependencyInjection;
 using StegoSharp;
+using StegSharp.Application.Common.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SkiaSharp;
+using System.Drawing.Imaging;
+using System.IO;
+using FirebaseAdmin.Messaging;
+using StegSharp.Infrastructure.Services;
+using Org.BouncyCastle.Utilities.IO;
 
 namespace FileHider.Core
 {
-    public class StegoEngine
+    public class StegoEngine : IStegoEngine
     {
-        private string _userId;
-        private FileUploader _fileUploader;
-        public StegoEngine(string userId, (string filePath, string bucketName) options)
+        private IF5Service _stegoService;
+        public StegoEngine(IServiceProvider serviceProvider)
         {
-            _userId = userId;
-            _fileUploader = new FileUploader(options);
+            _stegoService = serviceProvider.GetService<IF5Service>();
         }
 
-        public void HideMessageInImage(string content, Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
+        public void HideMessageInImage(ref Bitmap image, string password, string message)
         {
-            stegoImage.Strategy = imageStegoStrategy.AsStegoStrategy;
+            var skBitmap = new SKBitmap();
 
-            stegoImage.EmbedPayload(content);
-        }
-        public void HideFileInImage(byte[] fileBytes, string fileNameWithExt, Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt, ImageStegoStrategy imageStegoStrategy)
-        {
-            stegoImage.Strategy = imageStegoStrategy.AsStegoStrategy;
+            using (var stream = new MemoryStream())
+            {
+                image.Save(stream, image.RawFormat);
 
-            stegoImage.EmbedPayload(fileBytes);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                skBitmap = SKBitmap.Decode(stream);
+            }
+
+            MemoryStream memoryStream = new MemoryStream();
+            image.Save(memoryStream, image.RawFormat);
+            byte[] bitmapBytes = memoryStream.ToArray();
+
+            BinaryWriter binaryWriter = new BinaryWriter(memoryStream, Encoding.ASCII, true);
+
+            _stegoService.Embed(skBitmap, password, message, binaryWriter);
+
+            binaryWriter.Flush();
+
+            memoryStream.Position = 0;
+
+            Bitmap modifiedBitmap = new Bitmap(memoryStream);
+
+            image.Dispose();
+            image = modifiedBitmap;
+
+            //memoryStream.Dispose();
         }
 
-        public byte[] ExtractBytesFromStegoImage(int byteCount, Data.StegoOverwrite.StegoImage stegoImage)
+        public string ExtractHiddenMessageFromImage(Bitmap image, string password)
         {
-            return stegoImage.ExtractBytes().Take(byteCount).ToArray();
-        }
+            MemoryStream memoryStream = new MemoryStream();
+            EncoderParameters encoderParams = new EncoderParameters(1);
+            encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Compression, 0);
+            ImageCodecInfo codecInfo = ImageCodecInfo.GetImageEncoders().FirstOrDefault(codec => codec.FormatID == image.RawFormat.Guid);
+            image.Save(memoryStream, codecInfo, encoderParams);
+            memoryStream.Position = 0;
+            BinaryReader binaryReader = new BinaryReader(memoryStream);
+            byte[] data = binaryReader.ReadBytes((int)memoryStream.Length);
+            memoryStream.Position = 0;
+            
+            string result = _stegoService.Extract(password, binaryReader);
 
-        public string GenerateDownloadLink(Data.StegoOverwrite.StegoImage stegoImage, string imageNameWithExt)
-        {
-            return _fileUploader.UploadImageAsync(stegoImage, imageNameWithExt).Result;
-        }
-        public string GenerateDownloadLink(byte[] fileBytes, string fileNameWithExt)
-        {
-            return _fileUploader.UploadFileAsync(fileBytes, fileNameWithExt).Result;
+            memoryStream.Dispose();
+            binaryReader.Dispose();
+
+            return result;
         }
     }
 }
+
